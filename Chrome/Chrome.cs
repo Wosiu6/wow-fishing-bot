@@ -5,6 +5,8 @@ namespace Chrome
 {
     public partial class Chrome : Form
     {
+        public static bool IsRunning = false;
+
         public Chrome()
         {
             InitializeComponent();
@@ -13,11 +15,12 @@ namespace Chrome
             cbOutput.Items.AddRange(devices.ToArray());
             Text = Guid.NewGuid().ToString();
             cbOutput.Text = "Please select WoW's output device.";
+            btnStop.Enabled = IsRunning;
         }
 
         private void ExecuteTick()
         {
-            ResolveCurrentState();
+            UpdateButtonsAndLabel();
 
             object? selectedOutput = cbOutput.SelectedItem;
             bool isOutputSelected = cbOutput.SelectedIndex != -1;
@@ -54,19 +57,6 @@ namespace Chrome
             }
         }
 
-        private void ResolveCurrentState()
-        {
-            switch (tTick.Enabled)
-            {
-                case true:
-                    lblState.Text = "Running";
-                    break;
-                case false:
-                    lblState.Text = "Not Running";
-                    break;
-            }
-        }
-
         private static void SendButtonPress()
         {
             Process? process = Process.GetProcessesByName(Config.ProcessName).FirstOrDefault();
@@ -87,8 +77,16 @@ namespace Chrome
             if (tTick.Enabled)
             {
                 tTick.Stop();
-                lblState.Text = "Not Running";
+                IsRunning = false;
+                UpdateButtonsAndLabel();
             }
+        }
+
+        private void UpdateButtonsAndLabel()
+        {
+            btnStop.Enabled = IsRunning;
+            btnStart.Enabled = !IsRunning;
+            lblState.Text = IsRunning ? "Running" : "Stopped";
         }
 
         #region events
@@ -104,6 +102,8 @@ namespace Chrome
                 Thread.Sleep(Config.DelayInMs);
 
                 tTick.Start();
+                IsRunning = true;
+                UpdateButtonsAndLabel();
             }
             else if (!isOutputSelected)
             {
