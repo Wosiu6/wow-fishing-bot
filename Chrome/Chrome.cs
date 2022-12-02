@@ -15,6 +15,84 @@ namespace Chrome
             cbOutput.Text = "Please select WoW's output device.";
         }
 
+        private void ExecuteTick()
+        {
+            ResolveCurrentState();
+
+            object? selectedOutput = cbOutput.SelectedItem;
+            bool isOutputSelected = cbOutput.SelectedIndex != -1;
+            int delayForTick = new Random().Next(Config.DelayInMs - 231, Config.DelayInMs + 219);
+            bool isFakeCast = new Random().Next(0, 100) > 90;
+
+            if (isOutputSelected)
+            {
+                int currentVolume = (int)(((MMDevice)selectedOutput).AudioMeterInformation.MasterPeakValue * 100);
+
+                pbVolume.Value = currentVolume;
+                lblVolume.Text = currentVolume.ToString();
+
+                if (currentVolume > Config.VolumeTreshold)
+                {
+                    ExecuteBobberClickAndRecast();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Audio device needs to be set");
+                StopTimer();
+            }
+
+            void ExecuteBobberClickAndRecast()
+            {
+                if (isFakeCast) Thread.Sleep(delayForTick + 3000);
+
+                SendButtonPress();
+
+                Thread.Sleep(delayForTick + 37);
+                SendButtonPress();
+                Thread.Sleep(delayForTick - 79);
+            }
+        }
+
+        private void ResolveCurrentState()
+        {
+            switch (tTick.Enabled)
+            {
+                case true:
+                    lblState.Text = "Running";
+                    break;
+                case false:
+                    lblState.Text = "Not Running";
+                    break;
+            }
+        }
+
+        private static void SendButtonPress()
+        {
+            Process? process = Process.GetProcessesByName(Config.ProcessName).FirstOrDefault();
+
+            if (process != null)
+            {
+                IntPtr mainHandle = process.MainWindowHandle;
+                _ = SetForegroundWindow(mainHandle);
+                SendKeys.SendWait(Config.InteractKey);
+            }
+            else
+            {
+                MessageBox.Show("World of Warcraft not running");
+            }
+        }
+        private void StopTimer()
+        {
+            if (tTick.Enabled)
+            {
+                tTick.Stop();
+                lblState.Text = "Not Running";
+            }
+        }
+
+        #region events
+#pragma warning disable IDE1006 // Naming Styles
         private void btnStart_Click(object sender, EventArgs e)
         {
             Process? process = Process.GetProcessesByName(Config.ProcessName).FirstOrDefault();
@@ -22,8 +100,8 @@ namespace Chrome
 
             if (!tTick.Enabled && isOutputSelected && process is not null)
             {
-                clickButton();
-                Thread.Sleep(1500);
+                SendButtonPress();
+                Thread.Sleep(Config.DelayInMs);
 
                 tTick.Start();
             }
@@ -46,119 +124,54 @@ namespace Chrome
 
         private void tTick_Tick(object sender, EventArgs e)
         {
-            object? selectedOutput = cbOutput.SelectedItem;
-            bool isOutputSelected = cbOutput.SelectedIndex != -1;
-
-            switch (tTick.Enabled)
-            {
-                case true: lblState.Text = "Running";
-                    break;
-                case false: lblState.Text = "Not Running";
-                    break;
-            }
-
-            if (isOutputSelected)
-            {
-                int currentVolume = (int)(((MMDevice)selectedOutput).AudioMeterInformation.MasterPeakValue * 100);
-                pbVolume.Value = currentVolume;
-                lblVolume.Text = currentVolume.ToString();
-
-                if (currentVolume > Config.VolumeTreshold)
-                {
-                    clickButton();
-
-                    Thread.Sleep(Config.DelayInMs);
-                    clickButton();
-                    Thread.Sleep(Config.DelayInMs);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Audio device needs to be set");
-                StopTimer();
-            }
+            ExecuteTick();
         }
-
-        private void StopTimer()
-        {
-            if (tTick.Enabled)
-            {
-                tTick.Stop();
-                lblState.Text = "Not Running";
-            }
-        }
-
-        private static void clickButton()
-        {
-            Process? process = Process.GetProcessesByName(Config.ProcessName).FirstOrDefault();
-
-            if (process != null)
-            {
-                IntPtr mainHandle = process.MainWindowHandle;
-                SetForegroundWindow(mainHandle);
-                SendKeys.SendWait(Config.InteractKey);
-            }
-            else
-            {
-                MessageBox.Show("World of Warcraft not running");
-            }
-        }
-
         private void miDelay_Click(object sender, EventArgs e)
         {
-            using (Prompt prompt = new Prompt("Input new Delay In Ms", "Delay In Ms"))
-            {
-                string? res = prompt.Result;
+            using Prompt prompt = new("Input new Delay In Ms", "Delay In Ms");
+            string? res = prompt.Result;
 
-                if (int.TryParse(res, out int newValue))
-                {
-                    Config.DelayInMs = newValue;
-                }
+            if (int.TryParse(res, out int newValue))
+            {
+                Config.DelayInMs = newValue;
             }
         }
 
         private void miVolume_Click(object sender, EventArgs e)
         {
-            using (Prompt prompt = new Prompt("Input new volume treshold", "Volume Treshold"))
-            {
-                string? res = prompt.Result;
+            using Prompt prompt = new("Input new volume treshold", "Volume Treshold");
+            string? res = prompt.Result;
 
-                if (int.TryParse(res, out int newValue))
-                {
-                    Config.VolumeTreshold = newValue;
-                }
+            if (int.TryParse(res, out int newValue))
+            {
+                Config.VolumeTreshold = newValue;
             }
         }
 
         private void miProcess_Click(object sender, EventArgs e)
         {
-            using (Prompt prompt = new Prompt("Input new process name", "Process Name"))
-            {
-                Config.ProcessName = prompt.Result;
-            }
+            using Prompt prompt = new("Input new process name", "Process Name");
+            Config.ProcessName = prompt.Result;
         }
 
         private void miInteractKey_Click(object sender, EventArgs e)
         {
-            using (Prompt prompt = new Prompt("Input new interact key", "Interact Key"))
-            {
-                Config.InteractKey = prompt.Result;
-            }
+            using Prompt prompt = new("Input new interact key", "Interact Key");
+            Config.InteractKey = prompt.Result;
         }
+#pragma warning restore IDE1006 // Naming Styles
+        #endregion
     }
     public class Prompt : IDisposable
     {
-        private Form prompt { get; set; }
+        private Form Window { get; set; }
         public string Result { get; }
 
-        public Prompt(string text, string caption)
-        {
-            Result = ShowDialog(text, caption);
-        }
+        public Prompt(string text, string caption) => Result = ShowDialog(text, caption);
 
         private string ShowDialog(string description, string title)
         {
-            prompt = new Form()
+            Window = new Form()
             {
                 Width = 500,
                 Height = 150,
@@ -170,21 +183,18 @@ namespace Chrome
             Label textLabel = new Label() { Left = 50, Top = 20, Text = description };
             TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
             Button confirmation = new Button() { Text = "OK", Left = 375, Top = 80, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.Controls.Add(textLabel);
-            prompt.AcceptButton = confirmation;
+            confirmation.Click += (sender, e) => { Window.Close(); };
+            Window.Controls.Add(textBox);
+            Window.Controls.Add(confirmation);
+            Window.Controls.Add(textLabel);
+            Window.AcceptButton = confirmation;
 
-            return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
+            return Window.ShowDialog() == DialogResult.OK ? textBox.Text : "";
         }
 
         public void Dispose()
         {
-            if (prompt != null)
-            {
-                prompt.Dispose();
-            }
+            GC.SuppressFinalize(this);
         }
     }
 }

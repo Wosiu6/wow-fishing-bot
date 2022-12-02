@@ -174,7 +174,7 @@ namespace Chrome
             this.Controls.Add(this.btnStart);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Chrome";
-            this.Text = "Form1";
+            this.Text = "Chrome";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
