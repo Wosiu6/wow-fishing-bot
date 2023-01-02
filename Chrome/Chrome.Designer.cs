@@ -46,6 +46,7 @@ namespace Chrome
             this.miVolume = new System.Windows.Forms.ToolStripMenuItem();
             this.miProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.lblState = new System.Windows.Forms.Label();
+            this.tCast = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -160,6 +161,11 @@ namespace Chrome
             this.lblState.TabIndex = 7;
             this.lblState.Text = "Not Running";
             // 
+            // tCast
+            // 
+            this.tCast.Interval = 1000;
+            this.tCast.Tick += new System.EventHandler(this.tCast_tick);
+            // 
             // Chrome
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -198,5 +204,6 @@ namespace Chrome
         private ToolStripMenuItem miVolume;
         private ToolStripMenuItem miProcess;
         private Label lblState;
+        private System.Windows.Forms.Timer tCast;
     }
 }

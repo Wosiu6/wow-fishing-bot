@@ -5,7 +5,8 @@ namespace Chrome
 {
     public partial class Chrome : Form
     {
-        public static bool IsRunning = false;
+        private static bool s_isRunning = false;
+        private static int s_castTimeRemaining = 22;
 
         public Chrome()
         {
@@ -15,7 +16,7 @@ namespace Chrome
             cbOutput.Items.AddRange(devices.ToArray());
             Text = Guid.NewGuid().ToString();
             cbOutput.Text = "Please select WoW's output device.";
-            btnStop.Enabled = IsRunning;
+            btnStop.Enabled = s_isRunning;
         }
 
         private void ExecuteTick()
@@ -42,7 +43,7 @@ namespace Chrome
             else
             {
                 MessageBox.Show("Audio device needs to be set");
-                StopTimer();
+                Stop();
             }
 
             void ExecuteBobberClickAndRecast()
@@ -57,7 +58,7 @@ namespace Chrome
             }
         }
 
-        private static void SendButtonPress()
+        private void SendButtonPress()
         {
             Process? process = Process.GetProcessesByName(Config.ProcessName).FirstOrDefault();
 
@@ -66,27 +67,37 @@ namespace Chrome
                 IntPtr mainHandle = process.MainWindowHandle;
                 _ = SetForegroundWindow(mainHandle);
                 SendKeys.SendWait(Config.InteractKey);
+
+                s_castTimeRemaining = 22;
+                tCast.Start();
             }
             else
             {
                 MessageBox.Show("World of Warcraft not running");
             }
         }
-        private void StopTimer()
+
+        private void Stop()
         {
             if (tTick.Enabled)
             {
                 tTick.Stop();
-                IsRunning = false;
-                UpdateButtonsAndLabel();
             }
+
+            if (tCast.Enabled)
+            {
+                tCast.Stop();
+            }
+
+            s_isRunning = false;
+            UpdateButtonsAndLabel();
         }
 
         private void UpdateButtonsAndLabel()
         {
-            btnStop.Enabled = IsRunning;
-            btnStart.Enabled = !IsRunning;
-            lblState.Text = IsRunning ? "Running" : "Stopped";
+            btnStop.Enabled = s_isRunning;
+            btnStart.Enabled = !s_isRunning;
+            lblState.Text = s_isRunning ? "Running" : "Stopped";
         }
 
         #region events
@@ -102,24 +113,24 @@ namespace Chrome
                 Thread.Sleep(Config.DelayInMs);
 
                 tTick.Start();
-                IsRunning = true;
+                s_isRunning = true;
                 UpdateButtonsAndLabel();
             }
             else if (!isOutputSelected)
             {
                 MessageBox.Show("Choose output device");
-                StopTimer();
+                Stop();
             }
             else
             {
                 MessageBox.Show("WoW not running");
-                StopTimer();
+                Stop();
             }
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            StopTimer();
+            Stop();
         }
 
         private void tTick_Tick(object sender, EventArgs e)
@@ -159,6 +170,13 @@ namespace Chrome
             using Prompt prompt = new("Input new interact key", "Interact Key");
             Config.InteractKey = prompt.Result;
         }
+
+        private void tCast_tick(object sender, EventArgs e)
+        {
+            s_castTimeRemaining--;
+            if (s_castTimeRemaining < 1) SendButtonPress();
+        }
+
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }
@@ -180,9 +198,9 @@ namespace Chrome
                 StartPosition = FormStartPosition.CenterScreen,
                 TopMost = true
             };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = description };
-            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            Button confirmation = new Button() { Text = "OK", Left = 375, Top = 80, DialogResult = DialogResult.OK };
+            Label textLabel = new() { Left = 50, Top = 20, Text = description };
+            TextBox textBox = new() { Left = 50, Top = 50, Width = 400 };
+            Button confirmation = new() { Text = "OK", Left = 375, Top = 80, DialogResult = DialogResult.OK };
             confirmation.Click += (sender, e) => { Window.Close(); };
             Window.Controls.Add(textBox);
             Window.Controls.Add(confirmation);
