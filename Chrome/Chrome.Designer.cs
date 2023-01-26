@@ -29,6 +29,7 @@ namespace Chrome
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Chrome));
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.pbVolume = new System.Windows.Forms.ProgressBar();
@@ -185,6 +186,7 @@ namespace Chrome
             this.Controls.Add(this.pbVolume);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnStart);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Chrome";
             this.Text = "Chrome";
