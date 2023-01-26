@@ -5,9 +5,6 @@ namespace Chrome
 {
     partial class Chrome
     {
-        [DllImport("User32.dll")]
-        private static extern int SetForegroundWindow(IntPtr point);
-
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
@@ -47,6 +44,7 @@ namespace Chrome
             this.miProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.lblState = new System.Windows.Forms.Label();
             this.tCast = new System.Windows.Forms.Timer(this.components);
+            this.lblVolumeTreshold = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,9 +88,8 @@ namespace Chrome
             this.lblVolume.AutoSize = true;
             this.lblVolume.Location = new System.Drawing.Point(12, 149);
             this.lblVolume.Name = "lblVolume";
-            this.lblVolume.Size = new System.Drawing.Size(13, 15);
+            this.lblVolume.Size = new System.Drawing.Size(0, 15);
             this.lblVolume.TabIndex = 4;
-            this.lblVolume.Text = "0";
             // 
             // tTick
             // 
@@ -166,11 +163,21 @@ namespace Chrome
             this.tCast.Interval = 1000;
             this.tCast.Tick += new System.EventHandler(this.tCast_tick);
             // 
+            // lblVolumeTreshold
+            // 
+            this.lblVolumeTreshold.AutoSize = true;
+            this.lblVolumeTreshold.Location = new System.Drawing.Point(12, 167);
+            this.lblVolumeTreshold.Name = "lblVolumeTreshold";
+            this.lblVolumeTreshold.Size = new System.Drawing.Size(103, 15);
+            this.lblVolumeTreshold.TabIndex = 8;
+            this.lblVolumeTreshold.Text = "Volume treshhold:";
+            // 
             // Chrome
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(465, 188);
+            this.Controls.Add(this.lblVolumeTreshold);
             this.Controls.Add(this.lblState);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.lblVolume);
@@ -205,5 +212,6 @@ namespace Chrome
         private ToolStripMenuItem miProcess;
         private Label lblState;
         private System.Windows.Forms.Timer tCast;
+        private Label lblVolumeTreshold;
     }
 }
