@@ -1,14 +1,21 @@
 # Fishing-Bot-World-of-Warcraft
 
-## Sound detection
-This is a sound driven fish bot that uses interact button to cast/fish in wow using only the output sound. That is also the only sound in game you will have to have, bobber has to be the highest volume for this to work.
+## How does it work?
+This is a sound driven fish bot that uses interact button (introduced in DF) to cast/reel in fish in wow using only the output sound. 
+
+In theory, it would be possible to repurpose this software in other games/scenarios. Lost ark could is quite similar in terms of mechanics. Options in the software let you change the config. good luck.
 
 ## Running the project
 You will need visual studio to run this project. Open .sln in VS2022 and hit Run on the project called "Chrome" or alternatively hit build and use exe from bin folder.
+
+I didn't include an executable file. If you go as far as building the source code I would expect that you know what you're doing and understand the risks.
 
 ### In game setup
 You will need some sort of addon to bind fihsing/interaction button to. Default is the dot ("."). Make sure to mute all sounds in your game and leave only the fishing on. There are weakauras to achieve this, you can use an addon or just mute everything in game other than environment (I think, not sure).
 Rest is self explanatory, there are calibration options in the "Edit" context menu button. You can observe your volume levels to adjust it accordignly.
 
 ## Legal disclaimer
-This project has been made as a fun side project and I do not advice you use it on WoW official servers. Will you get banned? Probably not if you are cautious with it but at the end of the day using it on an official server would be breaching the ToS and getting banned is a real possibility.
+This project has been made as a fun side project and I do not advice you use it on WoW official servers. 
+
+### Will I get banned?
+Probably not if you are cautious with the software, but at the end of the day using it on an official server would be breaching the ToS and getting banned is a real possibility.
