@@ -6,9 +6,7 @@ This is a sound driven fish bot that uses interact button (introduced in DF) to 
 In theory, it would be possible to repurpose this software in other games/scenarios. Lost ark could is quite similar in terms of mechanics. Options in the software let you change the config. good luck.
 
 ## Running the project
-You will need visual studio to run this project. Open .sln in VS2022 and hit Run on the project called "Chrome" or alternatively hit build and use exe from bin folder.
-
-I didn't include an executable file. If you go as far as building the source code I would expect that you know what you're doing and understand the risks.
+https://github.com/Wosiu6/Fishing-Bot-World-of-Warcraft/releases
 
 ### In game setup
 You will need some sort of addon to bind fihsing/interaction button to. Default is the dot ("."). Make sure to mute all sounds in your game and leave only the fishing on. There are weakauras to achieve this, you can use an addon or just mute everything in game other than environment (I think, not sure).
