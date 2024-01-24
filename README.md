@@ -13,7 +13,4 @@ You will need some sort of addon to bind fihsing/interaction button to. Default 
 Rest is self explanatory, there are calibration options in the "Edit" context menu button. You can observe your volume levels to adjust it accordignly.
 
 ## Legal disclaimer
-This project has been made as a fun side project and I do not advice you use it on WoW official servers. 
-
-### Will I get banned?
-Probably not if you are cautious with the software, but at the end of the day using it on an official server would be breaching the ToS and getting banned is a real possibility.
+This project has been made as a fun side project and is not intended for use on official servers at all.
