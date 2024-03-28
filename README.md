@@ -1,4 +1,4 @@
-# Fishing-Bot-World-of-Warcraft
+# It is a fishing bot, I lied
 
 ## How does it work?
 This is a sound driven fish bot that uses interact button (introduced in DF) to cast/reel in fish in wow using only the output sound. 
